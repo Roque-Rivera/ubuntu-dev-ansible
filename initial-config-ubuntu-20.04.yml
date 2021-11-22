@@ -1,0 +1,54 @@
+---
+- hosts: all
+  become: true
+  vars_files:
+    - vars/default.yml
+  
+  tasks:
+
+    - name: Ensure sudo group exists
+      ansible.builtin.group:
+        name: sudo
+        state: present
+    
+    - name: Allow 'sudo' group passwordless sudo
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%sudo'
+        line: '%sudo ALL=(ALL) NOPASSWD:ALL'
+        validate: '/usr/sbin/visudo -cf %s'
+    
+    - name: Create an ansible user to admin host
+      user:
+        name: "{{ create_user }}"
+        state: present
+        groups: sudo
+        append: true
+        create_home: true
+        shell: /bin/bash
+      
+    - name: Setup authorized key
+      ansible.posix.authorized_key:
+        user: "{{ create_user }}"
+        state: present
+        key: "{{ copy_local_key }}"
+
+    - name: Ensure PubkeyAuthentication is enabled
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^#PubkeyAuthentication'
+        line: 'PubkeyAuthentication yes'
+    
+    - name: Disable password login
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+
+    - name: Restart sshd service to apply changes
+      ansible.builtin.service:
+        name: ssh
+        state: restarted

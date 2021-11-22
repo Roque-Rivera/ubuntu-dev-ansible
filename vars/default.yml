@@ -1,0 +1,7 @@
+---
+create_user: ansible
+copy_local_key:  "{{ lookup('file', lookup('env','HOME') + '/.ssh/ansible.pub') }}"
+init_apt_packages: ['curl', 'vim', 'git', 'jq', 'wget', 'htop', 'python3-pip', 'fonts-powerline', 'ca-certificates', 'gnupg', 'lsb-release', 'apt-transport-https']
+init_pip_packages: ['youtube-dl']
+post_apt_packages: ['terraform', 'packer', 'vault', 'docker-ce', 'docker-ce-cli', 'containerd.io']
+rm_apt_packages: ['docker', 'docker-engine', 'docker.io', 'containerd', 'runc']
