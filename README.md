@@ -50,10 +50,11 @@ You may have to change **cloud_user** with your sudo user.
 - [X] install packer
 - [ ] install docker
 - [ ] install awscli
-- [ ] install azcli
+- [X] install azcli
 - [ ] install gcloud util
 - [ ] install kubectl
 - [ ] install kubeadm
 - [ ] install eksctl
 - [ ] install helm
-- [ ] 
+- [ ] Check if cmd installations are present to skip steps
+- [ ] Check if cmd installations are up to date to skip steps

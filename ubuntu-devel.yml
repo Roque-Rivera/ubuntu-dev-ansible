@@ -42,7 +42,7 @@
     
     - name: Get docker repo gpg key
       ansible.builtin.shell:
-        cmd: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        cmd: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
     - name: Install docker repository
       ansible.builtin.apt_repository:
@@ -53,3 +53,28 @@
     - name: Install awscli v2
       ansible.builtin.shell:
         cmd: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && sudo ./aws/install
+
+    - name: Get microsoft repo gpg key
+      ansible.builtin.apt_key:
+        url: https://packages.microsoft.com/keys/microsoft.asc
+        state: present
+
+    - name: Add azurecli repository
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ focal main
+        state: present
+        update_cache: yes
+
+    - name: Get kubernetes repo gpg key
+      ansible.builtin.apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: Add kubernetes repository
+      ansible.builtin.apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        update_cache: yes
+
+
+        
