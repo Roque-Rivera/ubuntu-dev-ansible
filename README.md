@@ -48,13 +48,16 @@ You may have to change **cloud_user** with your sudo user.
 - [X] install terraform
 - [X] install vault
 - [X] install packer
-- [ ] install docker
-- [ ] install awscli
+- [X] install docker
+- [X] install awscli
 - [X] install azcli
 - [ ] install gcloud util
-- [ ] install kubectl
-- [ ] install kubeadm
-- [ ] install eksctl
-- [ ] install helm
+- [X] install kubectl
+- [X] install kubeadm
+- [X] install eksctl
+- [X] install helm
+- [X] install microk8s
 - [ ] Check if cmd installations are present to skip steps
 - [ ] Check if cmd installations are up to date to skip steps
+- [ ] Enable bash completion to all tools
+- [ ] Fix first reboot in initial-config-ubuntu-20.04.yml

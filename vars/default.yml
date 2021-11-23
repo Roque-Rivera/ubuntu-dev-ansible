@@ -1,7 +1,9 @@
 ---
+local_user: cloud_user
 create_user: ansible
 copy_local_key:  "{{ lookup('file', lookup('env','HOME') + '/.ssh/ansible.pub') }}"
 init_apt_packages: ['curl', 'vim', 'git', 'jq', 'wget', 'htop', 'python3-pip', 'fonts-powerline', 'ca-certificates', 'gnupg', 'lsb-release', 'apt-transport-https']
 init_pip_packages: ['youtube-dl']
-post_apt_packages: ['terraform', 'packer', 'vault', 'docker-ce', 'docker-ce-cli', 'containerd.io', 'azure-cli']
+post_apt_packages: ['terraform', 'packer', 'vault', 'docker-ce', 'docker-ce-cli', 'containerd.io', 'azure-cli','kubectl','kubeadm', 'helm', 'google-cloud-sdk']
 rm_apt_packages: ['docker', 'docker-engine', 'docker.io', 'containerd', 'runc']
+snap_packages: ['microk8s']

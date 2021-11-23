@@ -46,13 +46,31 @@
 
     - name: Install docker repository
       ansible.builtin.apt_repository:
-        repo: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu focal main
+        repo: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu focal stable
         state: present
         update_cache: yes
     
+    - name: Docker postinstall (group)
+      ansible.builtin.group:
+        name: docker
+        state: present
+    
+    - name: Docker postinstall (user)
+      ansible.builtin.user:
+        name: "{{ local_user }}"
+        groups: docker
+
     - name: Install awscli v2
       ansible.builtin.shell:
-        cmd: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && sudo ./aws/install
+        cmd: sudo rm -f awscliv2.zip && sudo rm -rf aws && sudo curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && sudo unzip awscliv2.zip && sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+
+    - name: Install eksctl
+      ansible.builtin.shell:
+        cmd: curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp && sudo mv /tmp/eksctl /usr/local/bin
+
+    - name: Install gcp sdk
+      ansible.builtin.shell:
+        cmd: echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
 
     - name: Get microsoft repo gpg key
       ansible.builtin.apt_key:
@@ -76,5 +94,39 @@
         state: present
         update_cache: yes
 
+    - name: Get helm repo gpg key
+      ansible.builtin.apt_key:
+        url: https://baltocdn.com/helm/signing.asc
+        state: present
+    
+    - name: Add helm repository
+      ansible.builtin.apt_repository:
+        repo: deb https://baltocdn.com/helm/stable/debian/ all main
+        state: present
+        update_cache: yes
 
+    - name: install post packages
+      ansible.builtin.apt:
+        name: "{{ post_apt_packages }}"
+        state: present
+    
+    - name: Install snap packages
+      community.general.snap:
+        name: "{{ snap_packages }}"
+        state: present
+        classic: true
+        channel: stable
+
+    - name: microk8s postinstall (group)
+      ansible.builtin.group:
+        name: microk8s
+        state: present
+    
+    - name: microk8s postinstall (user)
+      ansible.builtin.user:
+        name: "{{ local_user }}"
+        groups: microk8s
+
+    - name: reboot instance
+      ansible.builtin.reboot:
         
